@@ -1,23 +1,28 @@
-### Базовый docker image
-ARG BASE_IMAGE=""
-FROM $BASE_IMAGE
+# using multistage docker build
+# ref: https://docs.docker.com/develop/develop-images/multistage-build/
 
+# temp container to build using gradle
+FROM gradle:5.3.0-jdk-alpine AS TEMP_BUILD_IMAGE
+ENV APP_HOME=/usr/app/
+WORKDIR $APP_HOME
+COPY build.gradle settings.gradle $APP_HOME
 
-### Создание директории для конфигураций микросервиса
-#USER root
-#RUN mkdir -p /home/fmbs/config \
-#  /home/fmbs/src/main/resources/api
+COPY gradle $APP_HOME/gradle
+COPY --chown=gradle:gradle . /home/gradle/src
+USER root
+RUN chown -R gradle /home/gradle/src
 
-#RUN adduser -d /home/fmbs -s /sbin/nologin fmbs \
-# && chown -R fmbs:fmbs /home/fmbs
+RUN gradle build || return 0
+COPY . .
+RUN gradle clean build
 
-#USER fmbs
+# actual container
+FROM adoptopenjdk/openjdk11:alpine-jre
+ENV ARTIFACT_NAME=nihongo-1.0-SNAPSHOT.jar
+ENV APP_HOME=/usr/app/
 
-### Добавление jar микросервиса
-#WORKDIR /home/fmbs
-#
-#COPY /build/libs/*.jar app.jar
-#COPY src/main/resources/api ./src/main/resources/api
+WORKDIR $APP_HOME
+COPY --from=TEMP_BUILD_IMAGE $APP_HOME/build/libs/$ARTIFACT_NAME .
 
-### Команда запуска приложения
-CMD java $JAVA_OPTS -jar app.jar -Dspring.config.location=./config/
+EXPOSE 8080
+ENTRYPOINT exec java -jar ${ARTIFACT_NAME}
