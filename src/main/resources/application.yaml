@@ -17,5 +17,6 @@ spring:
       hibernate:
         format_sql: true
 telegram:
+  idUser: {{ ID_USER }}
   botName: NihManabuBot
-  token: 5809512958:AAGsAimRAnF8vyX1Qbb2u3j8aLAK1Gkq0As
+  token: {{ TOKEN }}

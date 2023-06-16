@@ -22,6 +22,9 @@ class Config {
     @Qualifier("bot")
     val bot:Bot?= null
 
+    @Value("\${telegram.idUser}")
+    private val idUser: Long = 0
+
     @Autowired
     var kanjiService: KanjiService? = null
 
@@ -41,15 +44,15 @@ class Config {
         if(repeatCount == 4) return
         repeatCount++
         val kanji = kanjiService?.getRandomKanji()
-        bot?.sendMessage(com.elbekd.bot.model.ChatId.IntegerId(1231654710), kanji?.value ?: "")
+        bot?.sendMessage(com.elbekd.bot.model.ChatId.IntegerId(idUser), kanji?.value ?: "")
         bot?.onMessage {
             if (it.text != null && kanji != null && kanji.hiragana != null &&
                 kanji.hiragana.equals(it.text)
             ) {
-                bot?.sendMessage(com.elbekd.bot.model.ChatId.IntegerId(1231654710), "Верно")
+                bot?.sendMessage(com.elbekd.bot.model.ChatId.IntegerId(idUser), "Верно")
                 kanjiService?.saveAfterLearning(kanji)
             } else {
-                bot?.sendMessage(com.elbekd.bot.model.ChatId.IntegerId(1231654710), "Нет")
+                bot?.sendMessage(com.elbekd.bot.model.ChatId.IntegerId(idUser), "Нет")
             }
             learning()
         }
