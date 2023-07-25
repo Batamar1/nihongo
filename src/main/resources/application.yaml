@@ -1,22 +1,27 @@
 server:
-  port: 8091
+  port: 8085
 spring:
   application:
     name: nihongo
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: postgrespw
+    url: jdbc:postgresql://dpg-ci5p66tgkuvh0tg8vj90-a.frankfurt-postgres.render.com/nihongo
+    username: nihongo_user
+    password: ba7AYxMpvjiAXfGxJhOagEGV4N4r2uju
     driverClassName: org.postgresql.Driver
+#  datasource:
+#    url: jdbc:postgresql://localhost:5432/postgres
+#    username: postgres
+#    password: postgrespw
+#    driverClassName: org.postgresql.Driver
   jpa:
     database: POSTGRESQL
-    show-sql: true
+    show-sql: false
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
 telegram:
-  idUser: {{ ID_USER }}
+  idUser: 123
   botName: NihManabuBot
-  token: {{ TOKEN }}
+  token: 5809512958:AAGsAimRAnF8vyX1Qbb2u3j8aLAK1Gkq0As

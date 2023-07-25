@@ -24,7 +24,7 @@ class KanjiController {
 
     @PostMapping("/save")
     fun saveKanji(@RequestBody kanjiDto: KanjiDto) : String{
-        kanjiService?.save(kanjiDto)
+        kanjiService?.saveKanji(kanjiDto)
         return "Success"
     }
 
