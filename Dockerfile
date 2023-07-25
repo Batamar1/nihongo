@@ -1,9 +1,9 @@
-FROM gradle:jdk11 as gradleimage
+FROM gradle:jdk11 as build
 COPY . /home/gradle/source
 WORKDIR /home/gradle/source
 RUN gradle build
 FROM openjdk:11-jre-slim
-COPY --from=gradleimage /home/gradle/source/build/libs/nihongo-1.0-SNAPSHOT.jar /src/
+COPY --from=build /home/gradle/source/build/libs/nihongo-1.0-SNAPSHOT.jar /src/
 ADD . /src
 WORKDIR /src
 
